@@ -1,8 +1,8 @@
-// if (process.env.NEW_RELIC_LICENSE_KEY) {
-//   // eslint-disable-next-line global-require
-//   const newrelic = require('newrelic');
-//   newrelic.instrumentWebframework('fastify', () => {});
-// }
+if (process.env.NEW_RELIC_LICENSE_KEY) {
+  // eslint-disable-next-line global-require
+  const newrelic = require('newrelic');
+  newrelic.instrumentWebframework('fastify', () => {});
+}
 if (process.env.ROLLBAR) {
   // eslint-disable-next-line global-require
   require('rollbar');

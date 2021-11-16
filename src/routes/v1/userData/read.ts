@@ -4,6 +4,11 @@ import logger from '../../../service/logger';
 import catchAsync from '../../../utils/catchAsync';
 import HttpException from '../../../utils/exceptions/HttpException';
 // import authMiddleware from '../../middleware/authMiddleware';
+import getDetails from '../../../service/userData/getDetails';
+
+export const testableRefs = {
+  getDetails,
+};
 
 const router = async (fastify: FastifyInstance): Promise<void> => {
   fastify.get<{
@@ -47,7 +52,7 @@ const router = async (fastify: FastifyInstance): Promise<void> => {
       await catchAsync(
         async () => {
           const { id } = req.params;
-          const userData = {id:1, name : 'Sandeep'};
+          const userData = await testableRefs.getDetails(id);
 
           if (!userData) {
             throw new HttpException(404, 'Not found');
