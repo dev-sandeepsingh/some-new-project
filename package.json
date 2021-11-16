@@ -6,21 +6,42 @@
   "scripts": {
     "start": "npm run build && node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "nodemon",
+    "start:dev": "npx nodemon ./src/index.ts",
     "build": "rimraf ./build && tsc",
+    "typeorm:dev": "npx cross-env NODE_ENV=development ts-node ./node_modules/typeorm/cli.js",
+    "typeorm:test": "npx cross-env NODE_ENV=test ts-node ./node_modules/typeorm/cli.js",
+    "db:update:dev": "npm run typeorm:dev migration:run",
+    "db:update:test": "npm run typeorm:test migration:run",
     "lint": "eslint . --ext .ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Sandeep Singh",
+  "engines": {
+    "node": "14.x"
+  },
   "license": "ISC",
   "devDependencies": {
+    "@types/newrelic": "^7.0.2",
     "@types/node": "^16.11.7",
     "@typescript-eslint/eslint-plugin": "^5.3.1",
     "@typescript-eslint/parser": "^5.3.1",
+    "cross-env": "^7.0.3",
     "eslint": "^8.2.0",
     "nodemon": "^2.0.14",
     "rimraf": "^3.0.2",
     "ts-node": "^10.4.0",
     "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "dotenv": "^8.6.0",
+    "fastify": "^3.23.1",
+    "pg": "^8.5.1",
+    "fastify-swagger": "^4.12.6",
+    "ioredis": "^4.28.0",
+    "newrelic": "^8.5.2",
+    "os": "^0.1.2",
+    "rollbar": "^2.24.0",
+    "throng": "^5.0.0",
+    "typeorm": "^0.2.39"
   }
 }
