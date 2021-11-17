@@ -38,6 +38,7 @@ const router = async (fastify: FastifyInstance): Promise<void> => {
                 properties: {
                   id: { type: 'number' },
                   name: { type: 'string', nullable: true },
+                  email: { type: 'string', nullable: true },
                 },
               },
               message: { type: 'string' },
@@ -65,6 +66,7 @@ const router = async (fastify: FastifyInstance): Promise<void> => {
               data: {
                 id,
                 name: userData.name,
+                email: userData.email,
               },
               message: 'Listed successfully',
             });

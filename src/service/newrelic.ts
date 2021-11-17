@@ -3,8 +3,7 @@ import { startSegment, setTransactionName } from 'newrelic';
 const useNewRelic = !!process.env.NEW_RELIC_LICENSE_KEY;
 const fakeFn = () => {};
 
-export const beginSegment = (name: string): (() => void) => {
-  console.log(useNewRelic);
+export const beginSegment = (name: string): (() => void) => {  
   if (!useNewRelic) {
     return fakeFn;
   }
