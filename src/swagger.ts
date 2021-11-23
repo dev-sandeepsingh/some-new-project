@@ -10,7 +10,7 @@ const swaggerConfig: SwaggerOptions = {
       description: 'API for nodejs boileplate',
       version: packageInfo.version,
     },
-    host: 'nodejsboilerplate',
+    host: 'localhost:3000/',
     consumes: ['application/json'],
     produces: ['application/json'],
     tags: [

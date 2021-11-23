@@ -1,31 +1,26 @@
 import { FastifyInstance } from 'fastify';
-import { setCustomTransactionName } from '../../../service/newrelic';
+import update from '../../../service/userData/update';
 import logger from '../../../service/logger';
+import { setCustomTransactionName } from '../../../service/newrelic';
 import catchAsync from '../../../utils/catchAsync';
 import HttpException from '../../../utils/exceptions/HttpException';
-// import authMiddleware from '../../middleware/authMiddleware';
-import getDetails from '../../../service/userData/getDetails';
-
-export const testableRefs = {
-  getDetails,
-};
+import { ItemDetailsI } from '../../../service/userData/types';
 
 const router = async (fastify: FastifyInstance): Promise<void> => {
-  fastify.get<{
-    Params: { id: string };
+  fastify.put<{
+    Params: {
+      id: number;
+    };
+    Body: Partial<ItemDetailsI>;
   }>(
     '/userData/:id',
     {
-      // preHandler: authMiddleware(),
       schema: {
         tags: ['user'],
-        params: {
+        body: {
           type: 'object',
-          required: ['id'],
           properties: {
-            id: {
-              type: 'number',
-            },
+            name: { type: 'string' },
           },
         },
         response: {
@@ -33,50 +28,44 @@ const router = async (fastify: FastifyInstance): Promise<void> => {
             description: 'Successful response',
             type: 'object',
             properties: {
+              success: { type: 'boolean' },
               data: {
                 type: 'object',
                 properties: {
                   id: { type: 'number' },
-                  name: { type: 'string', nullable: true },
-                  email: { type: 'string', nullable: true },
+                  name: { type: 'string' },
+                  email: { type: 'string' },
                 },
               },
-              message: { type: 'string' },
             },
           },
         },
       },
     },
     async (req, res) => {
-      setCustomTransactionName('/v1/userData/read');
-
+      setCustomTransactionName('/v1/userData/:id-put');
       await catchAsync(
-        async () => {
+        async () => {          
           const { id } = req.params;
-          const userData = await testableRefs.getDetails(id);
+          const data = req.body;
 
-          if (!userData) {
+          const updatedData= await update(id, data);
+
+          if (!updatedData) {
             throw new HttpException(404, 'Not found');
           }
 
-          res
-            .status(200)
-            .type('application/json')
-            .send({
-              data: {
-                id,
-                name: userData.name,
-                email: userData.email,
-              },
-              message: 'Listed successfully',
-            });
+          res.status(200).type('application/json').send({
+            success: true,
+            data: updatedData,
+          });
         },
         (error) => {
           if (error instanceof HttpException) {
             throw error;
           }
 
-          logger('error', `/v1/userData/read: Error ${error}`, error?.stack);
+          logger('error', `/v1/userData/:id-put: Error ${error}`);
 
           throw new HttpException(403, 'Forbidden');
         },
