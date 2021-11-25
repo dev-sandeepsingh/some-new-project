@@ -7,5 +7,5 @@ export default class UserData extends BaseEntity {
   email: string;
 
   @Column({ nullable: true })
-  name: string;  
+  name: string;
 }

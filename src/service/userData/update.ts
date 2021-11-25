@@ -15,13 +15,12 @@ const update: (
 
       const record = await getRepository(UserDataEntity).findOneOrFail(id);
       const dataToSave = userDataRepository.merge(record, {
-        ...data,        
+        ...data,
       });
-      const updatedRecord = await userDataRepository.save(dataToSave);      
+      const updatedRecord = await userDataRepository.save(dataToSave);
 
       logger('debug', 'service/userData/update: user data updated');
       return updatedRecord;
-
     },
     (error) => {
       logger(

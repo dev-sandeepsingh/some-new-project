@@ -16,7 +16,7 @@ import swaggerConfig from './swagger';
 
 interface RunAppResult {
   app: FastifyInstance;
-  connection: Connection;  
+  connection: Connection;
   cleanup: () => Promise<void>;
 }
 
@@ -24,7 +24,7 @@ const runApp: () => Promise<RunAppResult> = catchAsync(
   async () => {
     logger('info', 'Setting up connections');
 
-    const connection = await createConnection();    
+    const connection = await createConnection();
 
     logger('info', 'All connections established, loading Fastify app');
 
@@ -55,7 +55,7 @@ const runApp: () => Promise<RunAppResult> = catchAsync(
 
     logger('info', 'Fastify application is loaded');
 
-    const cleanup = async () => {      
+    const cleanup = async () => {
       await connection.close();
     };
 

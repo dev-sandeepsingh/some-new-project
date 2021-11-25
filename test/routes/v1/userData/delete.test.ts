@@ -1,19 +1,18 @@
 import * as assert from 'assert';
+import { Connection, getRepository } from 'typeorm';
 import * as sinon from 'sinon';
 import * as supertest from 'supertest';
-import { Connection, getRepository } from 'typeorm';
 import UserDataEntity from '../../../../src/database/entity/UserData';
 import runApp from '../../../../src/app';
 
 describe('/v1/userData', () => {
-  let request: supertest.SuperTest<supertest.Test>;
   let dbConnection: Connection;
-  let sandbox: sinon.SinonSandbox;
+  let request: supertest.SuperTest<supertest.Test>;
   let appCleanup: () => Promise<void>;
+  let sandbox: sinon.SinonSandbox;
 
   before('prepare app', async () => {
     const { app, cleanup, connection } = await runApp();
-
     request = supertest(app.server);
     dbConnection = connection;
     appCleanup = cleanup;
@@ -33,12 +32,11 @@ describe('/v1/userData', () => {
       .delete()
       .from(UserDataEntity)
       .execute();
-
     sandbox.restore();
   });
 
-  describe('GET /:id', () => {
-    let authToken: string;
+  describe('DELETE /:id', () => {
+    let itemId: number;
     let userData: UserDataEntity;
 
     beforeEach(async () => {
@@ -48,29 +46,23 @@ describe('/v1/userData', () => {
         email: 'sandeep@domain.com',
         name: 'Sandeep',
       });
+
+      itemId = userData.id;
     });
 
-    describe('client sends valid ID of his data', () => {
-      describe('Ger user data by id', () => {
-        it('should respond with status 200 and data', () =>
-          request
-            .get(`/v1/userData/${userData.id}`)
-            .expect(200)
-            .expect('Content-Type', /json/)
-            .then(async (response) => {
-              assert.strictEqual(response.body.data.id, userData.id);
-              assert.strictEqual(response.body.data.email, userData.email);
-              assert.strictEqual(response.body.data.name, userData.name);
-            }));
-      });
-    });
+    it('should respond with status 200', () =>
+      request.delete(`/v1/userData/${itemId}`).expect(200));
+    it('should delete item with given ID from database', () =>
+      request
+        .delete(`/v1/userData/${itemId}`)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .then(async () => {
+          const record = await getRepository(UserDataEntity).findOne(itemId);
+          assert(!record);
+        }));
 
-    describe('client sends invalid ID', () => {
-      it('should respond with status 400', () =>
-        request
-          .get('/v1/userData/test')
-          .set('Authorization', `Bearer ${authToken}`)
-          .expect(400));
-    });
+    it('should respond with status 404', () =>
+      request.delete(`/v1/userData/${Number(itemId) + 1}`).expect(404));
   });
 });

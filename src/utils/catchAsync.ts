@@ -4,5 +4,6 @@ type CatchFunction<T = any> = (error: Error) => T | Promise<T>;
 export default <T>(
   execFunction: AsyncFunction<T>,
   catchFunction: CatchFunction<T>,
-): (() => Promise<T>) => (...args: any[]) =>
-  execFunction(...args).catch(catchFunction);
+): (() => Promise<T>) =>
+  (...args: any[]) =>
+    execFunction(...args).catch(catchFunction);

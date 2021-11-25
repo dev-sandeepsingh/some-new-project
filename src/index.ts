@@ -21,7 +21,7 @@ const setupCluster = async () => {
 
   const { app }: { app } = appData;
 
-  app.listen(appPort, '0.0.0.0'); 
+  app.listen(appPort, '0.0.0.0');
 
   logger('info', `HTTP server is up and running on port ${appPort}`);
 };

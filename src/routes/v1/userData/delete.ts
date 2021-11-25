@@ -1,7 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import deleteUser, {
-    UserNotFound,
-} from '../../../service/userData/delete';
+import deleteUser, { UserNotFound } from '../../../service/userData/delete';
 import logger from '../../../service/logger';
 import { setCustomTransactionName } from '../../../service/newrelic';
 import catchAsync from '../../../utils/catchAsync';
@@ -31,7 +29,7 @@ const router = async (fastify: FastifyInstance): Promise<void> => {
     async (req, res) => {
       setCustomTransactionName('/v1/userData/:id-delete');
       await catchAsync(
-        async () => {          
+        async () => {
           const { id } = req.params;
           await deleteUser(Number(id));
 

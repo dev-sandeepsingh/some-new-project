@@ -1,5 +1,4 @@
 export interface ItemDetailsI {
-    name: string;
-    email: string;    
-}  
-  
+  name: string;
+  email: string;
+}

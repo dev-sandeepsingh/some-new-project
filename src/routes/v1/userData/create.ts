@@ -14,7 +14,7 @@ const router = async (fastify: FastifyInstance): Promise<void> => {
   fastify.post<{
     Body: {
       name: string;
-      email: string;      
+      email: string;
     };
   }>(
     '/userData',
@@ -23,7 +23,7 @@ const router = async (fastify: FastifyInstance): Promise<void> => {
         tags: ['user'],
         body: {
           type: 'object',
-          required: ['name','email'],
+          required: ['name', 'email'],
           properties: {
             name: { type: 'string' },
             email: { type: 'string' },

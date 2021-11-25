@@ -1,0 +1,10 @@
+node_modules/*
+coverage/*
+dist/*
+src/vendor/*
+newrelic.js
+ormconfig.js
+script
+test/.eslintrc.js
+.eslintrc.js
+static/*

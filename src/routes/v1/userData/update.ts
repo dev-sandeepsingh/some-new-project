@@ -45,11 +45,11 @@ const router = async (fastify: FastifyInstance): Promise<void> => {
     async (req, res) => {
       setCustomTransactionName('/v1/userData/:id-put');
       await catchAsync(
-        async () => {          
+        async () => {
           const { id } = req.params;
           const data = req.body;
 
-          const updatedData= await update(id, data);
+          const updatedData = await update(id, data);
 
           if (!updatedData) {
             throw new HttpException(404, 'Not found');
