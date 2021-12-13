@@ -36,12 +36,6 @@ const runApp: () => Promise<RunAppResult> = catchAsync(
     app.use(errorMiddleware);
     app.use(page404);
     app.use(helmet());
-    // app.register(swagger, swaggerConfig);
-
-    // app.register(fastifyStatic, {
-    //   root: path.join(process.cwd(), 'public'),
-    //   prefix: '/public/',
-    // });
 
     logger('info', 'Express application is loaded');
 
