@@ -4,38 +4,34 @@ import logger from '../../../service/logger';
 import { setCustomTransactionName } from '../../../service/newrelic';
 import catchAsync from '../../../utils/catchAsync';
 import HttpException from '../../../utils/exceptions/HttpException';
-// import { ItemDetailsI } from '../../../service/userData/types';
 
-const router = Router();
+const route: (route: Router) => void = (router) => {
+  setCustomTransactionName('/v1/users/:id-put');
+  router.put('/:id', async (req, res, next) => {
+    catchAsync(
+      async () => {
+        const { id } = req.params;
+        const data = req.body;
 
-router.put('/:id', async (req, res) => {
-  setCustomTransactionName('/v1/userData/:id-put');
-  await catchAsync(
-    async () => {
-      const { id } = req.params;
-      const data = req.body;
+        const updatedData = await update(Number(id), data);
 
-      const updatedData = await update(Number(id), data);
+        if (!updatedData) {
+          throw new HttpException(404, 'Not found');
+        }
+        res.status(200).type('application/json').send({
+          success: true,
+          data: updatedData,
+        });
+      },
+      async (error) => {
+        logger('error', `/v1/users/:id-put: Error ${error}`);
+        if (error instanceof HttpException) {
+          next(error);
+        }
+        next(new HttpException(403, error.message));
+      },
+    )();
+  });
+};
 
-      if (!updatedData) {
-        throw new HttpException(404, 'Not found');
-      }
-
-      res.status(200).type('application/json').send({
-        success: true,
-        data: updatedData,
-      });
-    },
-    (error) => {
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
-      logger('error', `/v1/userData/:id-put: Error ${error}`);
-
-      throw new HttpException(403, 'Forbidden');
-    },
-  )();
-});
-
-export default router;
+export default route;

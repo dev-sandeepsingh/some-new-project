@@ -4,11 +4,11 @@ import addRoute from './create';
 import updateRoute from './update';
 import deleteRoute from './delete';
 
-const router = Router();
+const router: Router = Router();
 // Add sub-routes
-router.use('/userData', readRoute);
-router.use('/userData', addRoute);
-router.use('/userData', updateRoute);
-router.use('/userData', deleteRoute);
+readRoute(router);
+addRoute(router);
+updateRoute(router);
+deleteRoute(router);
 
 export default router;

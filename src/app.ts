@@ -3,7 +3,7 @@ import { createConnection, Connection } from 'typeorm';
 import * as helmet from 'helmet';
 import * as bodyParser from 'body-parser';
 import logger from './service/logger';
-// import errorMiddleware from './routes/middleware/errorMiddleware';
+import errorMiddleware from './routes/middleware/errorMiddleware';
 import v1 from './routes/v1';
 
 import catchAsync from './utils/catchAsync';
@@ -28,17 +28,14 @@ const runApp: () => Promise<RunAppResult> = catchAsync(
     app.get('/', (req, res) => {
       res.send('Express working');
     });
-    // adding set of security middlewares
-    app.use(helmet());
-
     // parse incoming request body and append data to `req.body`
     app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.urlencoded({ extended: true }));
 
     app.use('/v1', v1);
-    // app.use(errorMiddleware);
+    app.use(errorMiddleware);
     app.use(page404);
-    app.use(helmet);
+    app.use(helmet());
     // app.register(swagger, swaggerConfig);
 
     // app.register(fastifyStatic, {
