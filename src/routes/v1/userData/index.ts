@@ -1,14 +1,14 @@
-import { FastifyInstance } from 'fastify';
+import { Router } from 'express';
 import readRoute from './read';
 import addRoute from './create';
 import updateRoute from './update';
 import deleteRoute from './delete';
 
-const router = async (fastify: FastifyInstance): Promise<void> => {
-  await fastify.register(readRoute);
-  await fastify.register(addRoute);
-  await fastify.register(updateRoute);
-  await fastify.register(deleteRoute);
-};
+const router = Router();
+// Add sub-routes
+router.use('/userData', readRoute);
+router.use('/userData', addRoute);
+router.use('/userData', updateRoute);
+router.use('/userData', deleteRoute);
 
 export default router;

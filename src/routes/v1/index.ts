@@ -1,17 +1,9 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import userDataRoute from './userData';
+import { Router } from 'express';
 
-const router = async (fastify: FastifyInstance) => {
-  // fastify.decorateRequest('authData', null);
-  // fastify.decorateRequest('pagingData', null);
+import userData from './userData';
 
-  await fastify.register(userDataRoute);
+const router = Router();
 
-  fastify.all('*', async (req: FastifyRequest, res: FastifyReply) => {
-    res.status(400);
-
-    return { message: 'Invalid request' };
-  });
-};
+router.use('/users', userData);
 
 export default router;

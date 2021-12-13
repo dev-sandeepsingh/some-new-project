@@ -1,7 +1,9 @@
+import runApp from './app';
+
 if (process.env.NEW_RELIC_LICENSE_KEY) {
   // eslint-disable-next-line global-require
   const newrelic = require('newrelic');
-  newrelic.instrumentWebframework('fastify', () => {});
+  newrelic.instrumentWebframework('express', () => {});
 }
 if (process.env.ROLLBAR) {
   // eslint-disable-next-line global-require
@@ -10,7 +12,6 @@ if (process.env.ROLLBAR) {
 const os = require('os');
 const throng = require('throng');
 const logger = require('./service/logger').default;
-const runApp = require('./app').default;
 
 process.env.TZ = 'UTC';
 
@@ -18,12 +19,10 @@ const appPort = process.env.PORT || 3000;
 
 const setupCluster = async () => {
   const appData = await runApp();
-
-  const { app }: { app } = appData;
-
-  app.listen(appPort, '0.0.0.0');
-
-  logger('info', `HTTP server is up and running on port ${appPort}`);
+  const { app } = appData;
+  app.listen(appPort, () => {
+    logger('info', `HTTP server is up and running on port ${appPort}`);
+  });
 };
 
 const concurrentImportSupported = true;
@@ -63,5 +62,5 @@ const runClusters = () => {
     count: clustersCount,
   });
 };
-
-runClusters();
+setupCluster();
+// runClusters();

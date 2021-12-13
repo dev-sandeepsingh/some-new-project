@@ -1,21 +1,18 @@
-import 'reflect-metadata';
+// import 'reflect-metadata';
 import { createConnection, Connection } from 'typeorm';
-import fastify, { FastifyInstance } from 'fastify';
-import fastifyStatic from 'fastify-static';
-import * as path from 'path';
-import helmet from 'fastify-helmet';
-import compress from 'fastify-compress';
-import swagger from 'fastify-swagger';
+import * as helmet from 'helmet';
+import * as bodyParser from 'body-parser';
 import logger from './service/logger';
-import { init as initRedis, close as closeRedis } from './service/redis';
-import errorMiddleware from './routes/middleware/errorMiddleware';
-import RoutesRoot from './routes/root';
-import RoutesV1 from './routes/v1';
+// import errorMiddleware from './routes/middleware/errorMiddleware';
+import v1 from './routes/v1';
+
 import catchAsync from './utils/catchAsync';
-import swaggerConfig from './swagger';
+import page404 from './routes/root';
+
+const express = require('express');
 
 interface RunAppResult {
-  app: FastifyInstance;
+  app: any;
   connection: Connection;
   cleanup: () => Promise<void>;
 }
@@ -26,34 +23,30 @@ const runApp: () => Promise<RunAppResult> = catchAsync(
 
     const connection = await createConnection();
 
-    logger('info', 'All connections established, loading Fastify app');
-
-    const app = fastify();
-
-    app.setErrorHandler(errorMiddleware);
-    app.addContentTypeParser('*', (request, payload, done) => {
-      done(null, null);
+    logger('info', 'All connections established, loading express app');
+    const app = express();
+    app.get('/', (req, res) => {
+      res.send('Express working');
     });
+    // adding set of security middlewares
+    app.use(helmet());
 
-    app.register(helmet);
-    app.register(compress);
-    app.register(swagger, swaggerConfig);
+    // parse incoming request body and append data to `req.body`
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: false }));
 
-    app.register(fastifyStatic, {
-      root: path.join(process.cwd(), 'public'),
-      prefix: '/public/',
-    });
+    app.use('/v1', v1);
+    // app.use(errorMiddleware);
+    app.use(page404);
+    app.use(helmet);
+    // app.register(swagger, swaggerConfig);
 
-    app.register(RoutesRoot);
-    app.register(RoutesV1, { prefix: '/v1' });
+    // app.register(fastifyStatic, {
+    //   root: path.join(process.cwd(), 'public'),
+    //   prefix: '/public/',
+    // });
 
-    await app.ready();
-
-    if (app.swagger) {
-      app.swagger();
-    }
-
-    logger('info', 'Fastify application is loaded');
+    logger('info', 'Express application is loaded');
 
     const cleanup = async () => {
       await connection.close();
@@ -63,7 +56,6 @@ const runApp: () => Promise<RunAppResult> = catchAsync(
   },
   (error: Error) => {
     logger('critical', `TypeORM connection error: ${error.message}`);
-
     throw error;
   },
 );

@@ -1,11 +1,9 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { Router, Request, Response } from 'express';
 
-const router = async (fastify: FastifyInstance) => {
-  fastify.all('*', async (req: FastifyRequest, res: FastifyReply) => {
-    res.status(400);
+const router = Router();
 
-    return { message: 'Invalid request' };
-  });
-};
+router.get('*', (req: Request, res: Response) => {
+  return res.status(404).json('404 Not Found');
+});
 
 export default router;
