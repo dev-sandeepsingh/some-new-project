@@ -2,6 +2,7 @@
 import { createConnection, Connection } from 'typeorm';
 import * as helmet from 'helmet';
 import * as bodyParser from 'body-parser';
+import * as swaggerUi from 'swagger-ui-express';
 import logger from './service/logger';
 import errorMiddleware from './routes/middleware/errorMiddleware';
 import v1 from './routes/v1';
@@ -36,6 +37,16 @@ const runApp: () => Promise<RunAppResult> = catchAsync(
     app.use(errorMiddleware);
     app.use(page404);
     app.use(helmet());
+    app.use(express.static('public'));
+    app.use(
+      '/docs',
+      swaggerUi.serve,
+      swaggerUi.setup(undefined, {
+        swaggerOptions: {
+          url: '/swagger.json',
+        },
+      }),
+    );
 
     logger('info', 'Express application is loaded');
 
