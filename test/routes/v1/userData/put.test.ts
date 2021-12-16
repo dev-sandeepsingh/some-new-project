@@ -15,7 +15,7 @@ describe('/v1/userData', () => {
     const { app, cleanup, connection } = await runApp();
 
     dbConnection = connection;
-    request = supertest(app.server);
+    request = supertest(app);
     appCleanup = cleanup;
   });
 
@@ -58,11 +58,11 @@ describe('/v1/userData', () => {
       });
 
       it('should respond with status 200', () =>
-        request.put(`/v1/userData/${itemId}`).send(dataToUpdate).expect(200));
+        request.put(`/v1/users/${itemId}`).send(dataToUpdate).expect(200));
 
       it("should respond with item's data", () =>
         request
-          .put(`/v1/userData/${itemId}`)
+          .put(`/v1/users/${itemId}`)
           .send(dataToUpdate)
           .expect(200)
           .then((response) => {
@@ -81,13 +81,15 @@ describe('/v1/userData', () => {
             assert.notStrictEqual(result.updatedAt, originalUpdatedAt);
 
             delete result.updatedAt;
+            delete result.createdAt;
+            delete result.deletedAt;
 
             assert.deepStrictEqual(result, expected);
           }));
 
       it('should update data in DB', () =>
         request
-          .put(`/v1/userData/${itemId}`)
+          .put(`/v1/users/${itemId}`)
           .send(dataToUpdate)
           .expect(200)
           .then(async () => {
@@ -109,7 +111,7 @@ describe('/v1/userData', () => {
 
       it('should respond with status 404', () =>
         request
-          .put(`/v1/userData/${itemId}`)
+          .put(`/v1/users/${itemId}`)
           .send({
             firstName: 'Name3',
           })

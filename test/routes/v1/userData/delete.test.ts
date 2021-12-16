@@ -13,7 +13,7 @@ describe('/v1/userData', () => {
 
   before('prepare app', async () => {
     const { app, cleanup, connection } = await runApp();
-    request = supertest(app.server);
+    request = supertest(app);
     dbConnection = connection;
     appCleanup = cleanup;
   });
@@ -51,10 +51,10 @@ describe('/v1/userData', () => {
     });
 
     it('should respond with status 200', () =>
-      request.delete(`/v1/userData/${itemId}`).expect(200));
+      request.delete(`/v1/users/${itemId}`).expect(200));
     it('should delete item with given ID from database', () =>
       request
-        .delete(`/v1/userData/${itemId}`)
+        .delete(`/v1/users/${itemId}`)
         .expect(200)
         .expect('Content-Type', /json/)
         .then(async () => {
@@ -63,6 +63,6 @@ describe('/v1/userData', () => {
         }));
 
     it('should respond with status 404', () =>
-      request.delete(`/v1/userData/${Number(itemId) + 1}`).expect(404));
+      request.delete(`/v1/users/${Number(itemId) + 1}`).expect(404));
   });
 });

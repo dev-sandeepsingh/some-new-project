@@ -14,7 +14,7 @@ describe('/v1/userData', () => {
   before('prepare app', async () => {
     const { app, cleanup, connection } = await runApp();
 
-    request = supertest(app.server);
+    request = supertest(app);
     dbConnection = connection;
     appCleanup = cleanup;
   });
@@ -38,7 +38,6 @@ describe('/v1/userData', () => {
   });
 
   describe('GET /:id', () => {
-    let authToken: string;
     let userData: UserDataEntity;
 
     beforeEach(async () => {
@@ -54,23 +53,15 @@ describe('/v1/userData', () => {
       describe('Ger user data by id', () => {
         it('should respond with status 200 and data', () =>
           request
-            .get(`/v1/userData/${userData.id}`)
+            .get(`/v1/users/${userData.id}`)
             .expect(200)
             .expect('Content-Type', /json/)
             .then(async (response) => {
-              assert.strictEqual(response.body.data.id, userData.id);
+              assert.strictEqual(response.body.data.id, String(userData.id));
               assert.strictEqual(response.body.data.email, userData.email);
               assert.strictEqual(response.body.data.name, userData.name);
             }));
       });
-    });
-
-    describe('client sends invalid ID', () => {
-      it('should respond with status 400', () =>
-        request
-          .get('/v1/userData/test')
-          .set('Authorization', `Bearer ${authToken}`)
-          .expect(400));
     });
   });
 });

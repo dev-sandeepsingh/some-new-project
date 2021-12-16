@@ -8,18 +8,23 @@
     "start": "npm run build && node build/index.js",
     "start:dev": "npx nodemon ./src/index.ts",
     "build": "rimraf ./build && tsc",
+    "typeorm": "node ./node_modules/typeorm/cli.js",
     "typeorm:dev": "npx cross-env NODE_ENV=development ts-node ./node_modules/typeorm/cli.js",
     "typeorm:test": "npx cross-env NODE_ENV=test ts-node ./node_modules/typeorm/cli.js",
+    "db:update": "npm run build && npm run typeorm migration:run",
     "db:update:dev": "npm run typeorm:dev migration:run",
     "db:update:test": "npm run typeorm:test migration:run",
     "test": "npx cross-env NODE_ENV=test mocha --exit --timeout 15000 -r ts-node/register --file ./test/setup.ts './test/**/*.test.ts'",
     "test:watch": "npx cross-env NODE_ENV=test mocha --timeout 15000 -r ts-node/register -w -R min --file ./test/setup.ts './test/**/*.test.ts'",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "predev": "npm run swagger",
+    "prebuild": "npm run swagger",
+    "swagger": "tsoa spec"
   },
   "keywords": [],
   "author": "Sandeep Singh",
   "engines": {
-    "node": "14.x"
+    "node": "16.x"
   },
   "license": "ISC",
   "devDependencies": {
