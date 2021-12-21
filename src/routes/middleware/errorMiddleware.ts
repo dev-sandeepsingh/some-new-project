@@ -10,9 +10,11 @@ function errorMiddleware(
 ) {
   const status = error.status || 500;
   const message = error.message || 'Something went wrong';
+  const details = error.details
   return response.status(status).send({
     status,
     message,
+    details,
   });
 }
 
