@@ -1,26 +1,27 @@
 import { getRepository } from 'typeorm';
-import UserDataEntity from '../../database/entity/UserData';
+import UserEntity from '../../database/entity/User';
 import catchAsync from '../../utils/catchAsync';
 import isUniqueViolationError from '../../utils/isUniqueViolationError';
 import logger from '../logger';
 
-const create: (data: Partial<UserDataEntity>) => Promise<UserDataEntity> =
+const create: (data: Partial<UserEntity>) => Promise<UserEntity> =
   async (data) =>
     catchAsync(
       async () => {
-        const userDataRepository = getRepository(UserDataEntity);
+        const userRepository = getRepository(UserEntity);
 
-        const newUserData = await userDataRepository.save({
-          name: data.name,
+        const newUser = await userRepository.create({
           email: data.email,
+          name: data.name,
+          password: data.password,
         });
 
-        return newUserData;
+        return userRepository.save(newUser);
       },
       (error) => {
         logger(
           isUniqueViolationError(error) ? 'warning' : 'error',
-          `/service/userData/create: Error ${error} when processing {email: ${data.email}`,
+          `/service/user/create: Error ${error} when processing {email: ${data.email}`,
           error.stack,
         );
 

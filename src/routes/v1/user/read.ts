@@ -3,7 +3,7 @@ import { setCustomTransactionName } from '../../../service/newrelic';
 import logger from '../../../service/logger';
 import catchAsync from '../../../utils/catchAsync';
 import HttpException from '../../../utils/exceptions/HttpException';
-import getDetails from '../../../service/userData/getDetails';
+import getDetails from '../../../service/user/getDetails';
 
 export const testableRefs = {
   getDetails,
@@ -25,8 +25,8 @@ const route: (route: Router) => void = (router) => {
           .send({
             data: {
               id,
-              name: userData.name,
               email: userData.email,
+              name: userData.name,
             },
             message: 'Listed successfully',
           });
