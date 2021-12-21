@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { Connection, getRepository } from 'typeorm';
 import * as sinon from 'sinon';
 import * as supertest from 'supertest';
-import UserDataEntity from '../../../../src/database/entity/UserData';
+import UserEntity from '../../../../src/database/entity/User';
 import runApp from '../../../../src/app';
 
 describe('/v1/userData', () => {
@@ -30,24 +30,25 @@ describe('/v1/userData', () => {
     await dbConnection
       .createQueryBuilder()
       .delete()
-      .from(UserDataEntity)
+      .from(UserEntity)
       .execute();
     sandbox.restore();
   });
 
   describe('DELETE /:id', () => {
     let itemId: number;
-    let userData: UserDataEntity;
+    let user: UserEntity;
 
     beforeEach(async () => {
-      const userDataRepository = getRepository(UserDataEntity);
+      const userDataRepository = getRepository(UserEntity);
 
-      userData = await userDataRepository.save({
+      user = await userDataRepository.save({
         email: 'sandeep@domain.com',
+        password: 'password',
         name: 'Sandeep',
       });
 
-      itemId = userData.id;
+      itemId = user.id;
     });
 
     it('should respond with status 200', () =>
@@ -58,7 +59,7 @@ describe('/v1/userData', () => {
         .expect(200)
         .expect('Content-Type', /json/)
         .then(async () => {
-          const record = await getRepository(UserDataEntity).findOne(itemId);
+          const record = await getRepository(UserEntity).findOne(itemId);
           assert(!record);
         }));
 

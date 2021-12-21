@@ -2,10 +2,11 @@ import * as assert from 'assert';
 import { Connection, getRepository } from 'typeorm';
 import * as sinon from 'sinon';
 import * as supertest from 'supertest';
-import UserDataEntity from '../../../../src/database/entity/UserData';
+import UserEntity from '../../../../src/database/entity/User';
 import runApp from '../../../../src/app';
+import { Role } from '../../../../src/types';
 
-describe('/v1/userData', () => {
+describe('/v1/users', () => {
   let dbConnection: Connection;
   let request: supertest.SuperTest<supertest.Test>;
   let appCleanup: () => Promise<void>;
@@ -31,18 +32,18 @@ describe('/v1/userData', () => {
     await dbConnection
       .createQueryBuilder()
       .delete()
-      .from(UserDataEntity)
+      .from(UserEntity)
       .execute();
     sandbox.restore();
   });
 
   describe('PUT /:id', () => {
-    let userData: UserDataEntity;
+    let user: UserEntity;
 
     beforeEach(async () => {
-      userData = await getRepository(UserDataEntity).save({
+      user = await getRepository(UserEntity).save({
         email: 'sandeep@domain.com',
-        name: 'Sandeep',
+        password: 'test',
       });
     });
     context('item with given ID exists', () => {
@@ -50,7 +51,7 @@ describe('/v1/userData', () => {
       let dataToUpdate;
 
       beforeEach(() => {
-        itemId = userData.id;
+        itemId = user.id;
 
         dataToUpdate = {
           name: 'Name3',
@@ -68,14 +69,15 @@ describe('/v1/userData', () => {
           .then((response) => {
             const responseJSON = response.body;
             const result = responseJSON.data;
-            const originalUpdatedAt = userData.updatedAt.getTime();
+            const originalUpdatedAt = user.updatedAt.getTime();
 
             assert(result);
 
             const expected = {
-              id: userData.id,
+              id: user.id,
               name: dataToUpdate.name,
-              email: userData.email,
+              email: user.email,
+              role: Role.USER
             };
 
             assert.notStrictEqual(result.updatedAt, originalUpdatedAt);
@@ -83,6 +85,7 @@ describe('/v1/userData', () => {
             delete result.updatedAt;
             delete result.createdAt;
             delete result.deletedAt;
+            delete result.password;
 
             assert.deepStrictEqual(result, expected);
           }));
@@ -93,7 +96,7 @@ describe('/v1/userData', () => {
           .send(dataToUpdate)
           .expect(200)
           .then(async () => {
-            const updatedData = await getRepository(UserDataEntity).findOne(
+            const updatedData = await getRepository(UserEntity).findOne(
               itemId,
             );
 
@@ -106,7 +109,7 @@ describe('/v1/userData', () => {
       let itemId: number;
 
       beforeEach(() => {
-        itemId = userData.id + 100;
+        itemId = user.id + 100;
       });
 
       it('should respond with status 404', () =>

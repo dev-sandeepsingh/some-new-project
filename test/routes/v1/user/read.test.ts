@@ -2,10 +2,10 @@ import * as assert from 'assert';
 import * as sinon from 'sinon';
 import * as supertest from 'supertest';
 import { Connection, getRepository } from 'typeorm';
-import UserDataEntity from '../../../../src/database/entity/UserData';
+import UserEntity from '../../../../src/database/entity/User';
 import runApp from '../../../../src/app';
 
-describe('/v1/userData', () => {
+describe('/v1/users', () => {
   let request: supertest.SuperTest<supertest.Test>;
   let dbConnection: Connection;
   let sandbox: sinon.SinonSandbox;
@@ -31,21 +31,22 @@ describe('/v1/userData', () => {
     await dbConnection
       .createQueryBuilder()
       .delete()
-      .from(UserDataEntity)
+      .from(UserEntity)
       .execute();
 
     sandbox.restore();
   });
 
   describe('GET /:id', () => {
-    let userData: UserDataEntity;
+    let user: UserEntity;
 
     beforeEach(async () => {
-      const userDataRepository = getRepository(UserDataEntity);
+      const userRepository = getRepository(UserEntity);
 
-      userData = await userDataRepository.save({
-        email: 'sandeep@domain.com',
-        name: 'Sandeep',
+      user = await userRepository.save({
+        email: 'john@domain.com',
+        password: 'Test',
+        name: 'John'
       });
     });
 
@@ -53,13 +54,13 @@ describe('/v1/userData', () => {
       describe('Ger user data by id', () => {
         it('should respond with status 200 and data', () =>
           request
-            .get(`/v1/users/${userData.id}`)
+            .get(`/v1/users/${user.id}`)
             .expect(200)
             .expect('Content-Type', /json/)
             .then(async (response) => {
-              assert.strictEqual(response.body.data.id, String(userData.id));
-              assert.strictEqual(response.body.data.email, userData.email);
-              assert.strictEqual(response.body.data.name, userData.name);
+              assert.strictEqual(response.body.data.id, String(user.id));
+              assert.strictEqual(response.body.data.email, user.email);
+              assert.strictEqual(response.body.data.name, user.name);
             }));
       });
     });
