@@ -6,9 +6,11 @@ import * as swaggerUi from 'swagger-ui-express';
 import logger from './service/logger';
 import errorMiddleware from './routes/middleware/errorMiddleware';
 import v1 from './routes/v1';
+import * as jwt from 'express-jwt'
 
 import catchAsync from './utils/catchAsync';
 import page404 from './routes/root';
+import { getToken } from './routes/middleware/jwtMiddleware';
 
 const express = require('express');
 
@@ -33,7 +35,21 @@ const runApp: () => Promise<RunAppResult> = catchAsync(
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
 
+    //setup jwt
+    app.use(
+      jwt({
+        secret: process.env.JWT_SECRET || '',
+        algorithms: ['HS512'],
+        getToken,
+      }).unless({
+        path: [
+          '/v1/auth/login',
+          '/v1/users/register'
+        ]
+      })
+    )
     app.use('/v1', v1);
+
     app.use(errorMiddleware);
     app.use(page404);
     app.use(helmet());
