@@ -6,7 +6,7 @@ import catchAsync from '../../../utils/catchAsync';
 import HttpException from '../../../utils/exceptions/HttpException';
 import createUser from '../../../service/user/create';
 import { body } from 'express-validator';
-import { validateInput } from '../../../utils/validate-input';
+import { validateInput } from '../../../utils/validateInput';
 
 export const testableRefs = {
   createUser,
