@@ -4,6 +4,7 @@ import * as sinon from 'sinon';
 import * as supertest from 'supertest';
 import UserEntity from '../../../../src/database/entity/User';
 import runApp from '../../../../src/app';
+import jwtSign from '../../../../src/utils/jwtSign';
 
 describe('/v1/userData', () => {
   let dbConnection: Connection;
@@ -38,6 +39,7 @@ describe('/v1/userData', () => {
   describe('DELETE /:id', () => {
     let itemId: number;
     let user: UserEntity;
+    let token: string;
 
     beforeEach(async () => {
       const userDataRepository = getRepository(UserEntity);
@@ -49,13 +51,16 @@ describe('/v1/userData', () => {
       });
 
       itemId = user.id;
+      token = jwtSign({ userId: user.id, ...user })
     });
 
+
     it('should respond with status 200', () =>
-      request.delete(`/v1/users/${itemId}`).expect(200));
+      request.delete(`/v1/users/${itemId}`).set('Authorization', `Bearer ${token}`).expect(200));
     it('should delete item with given ID from database', () =>
       request
         .delete(`/v1/users/${itemId}`)
+        .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect('Content-Type', /json/)
         .then(async () => {
@@ -64,6 +69,6 @@ describe('/v1/userData', () => {
         }));
 
     it('should respond with status 404', () =>
-      request.delete(`/v1/users/${Number(itemId) + 1}`).expect(404));
+      request.delete(`/v1/users/${Number(itemId) + 1}`).set('Authorization', `Bearer ${token}`).expect(404));
   });
 });

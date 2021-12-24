@@ -4,6 +4,7 @@ import * as supertest from 'supertest';
 import { Connection, getRepository } from 'typeorm';
 import UserEntity from '../../../../src/database/entity/User';
 import runApp from '../../../../src/app';
+import jwtSign from '../../../../src/utils/jwtSign';
 
 describe('/v1/users', () => {
   let request: supertest.SuperTest<supertest.Test>;
@@ -39,6 +40,7 @@ describe('/v1/users', () => {
 
   describe('GET /:id', () => {
     let user: UserEntity;
+    let token: string;
 
     beforeEach(async () => {
       const userRepository = getRepository(UserEntity);
@@ -48,6 +50,7 @@ describe('/v1/users', () => {
         password: 'Test',
         name: 'John'
       });
+      token = jwtSign(user)
     });
 
     describe('client sends valid ID of his data', () => {
@@ -55,6 +58,7 @@ describe('/v1/users', () => {
         it('should respond with status 200 and data', () =>
           request
             .get(`/v1/users/${user.id}`)
+            .set('Authorization', `Bearer ${token}`)
             .expect(200)
             .expect('Content-Type', /json/)
             .then(async (response) => {

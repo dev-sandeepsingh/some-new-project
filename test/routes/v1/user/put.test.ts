@@ -5,6 +5,7 @@ import * as supertest from 'supertest';
 import UserEntity from '../../../../src/database/entity/User';
 import runApp from '../../../../src/app';
 import { Role } from '../../../../src/types';
+import jwtSign from '../../../../src/utils/jwtSign';
 
 describe('/v1/users', () => {
   let dbConnection: Connection;
@@ -39,12 +40,14 @@ describe('/v1/users', () => {
 
   describe('PUT /:id', () => {
     let user: UserEntity;
+    let token: string;
 
     beforeEach(async () => {
       user = await getRepository(UserEntity).save({
         email: 'sandeep@domain.com',
         password: 'test',
       });
+      token = jwtSign(user)
     });
     context('item with given ID exists', () => {
       let itemId: number;
@@ -59,11 +62,12 @@ describe('/v1/users', () => {
       });
 
       it('should respond with status 200', () =>
-        request.put(`/v1/users/${itemId}`).send(dataToUpdate).expect(200));
+        request.put(`/v1/users/${itemId}`).set('Authorization', `Bearer ${token}`).send(dataToUpdate).expect(200));
 
       it("should respond with item's data", () =>
         request
           .put(`/v1/users/${itemId}`)
+          .set('Authorization', `Bearer ${token}`)
           .send(dataToUpdate)
           .expect(200)
           .then((response) => {
@@ -94,6 +98,7 @@ describe('/v1/users', () => {
         request
           .put(`/v1/users/${itemId}`)
           .send(dataToUpdate)
+          .set('Authorization', `Bearer ${token}`)
           .expect(200)
           .then(async () => {
             const updatedData = await getRepository(UserEntity).findOne(
@@ -115,6 +120,7 @@ describe('/v1/users', () => {
       it('should respond with status 404', () =>
         request
           .put(`/v1/users/${itemId}`)
+          .set('Authorization', `Bearer ${token}`)
           .send({
             firstName: 'Name3',
           })
