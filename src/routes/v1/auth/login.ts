@@ -6,7 +6,9 @@ import catchAsync from '../../../utils/catchAsync';
 import HttpException from '../../../utils/exceptions/HttpException';
 import authenticateUser from '../../../service/user/authenticate';
 import { body } from 'express-validator';
-import { validateInput } from '../../../utils/validate-input';
+import { validateInput } from '../../../utils/validateInput';
+import * as jwt from 'jsonwebtoken'
+import jwtSign from '../../../utils/jwtSign';
 
 export const testableRefs = {
     authenticateUser,
@@ -29,8 +31,10 @@ const route: (route: Router) => void = (router) => {
                     if (!user) {
                         throw new HttpException(404, 'Invalid email or password');
                     }
+
                     res.status(200).type('application/json').send({
                         success: true,
+                        token: jwtSign({ userId: user.id, email }),
                     });
                 },
                 async (error) => {
