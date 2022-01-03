@@ -1,0 +1,62 @@
+version: 2.1
+orbs:
+  heroku: circleci/heroku@1.0
+  node: circleci/node@2.0
+workflows:
+  heroku-deploy:
+    jobs:
+      - build-and-test
+      - heroku/deploy-via-git:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only: master     
+jobs:
+  build-and-test:
+    docker:
+      - image: buildkite/puppeteer:10.0.0
+        environment:
+          REVIEWEE_URL: https://api.reviewee.it
+          COMMITS_CHECK_ENDPOINT: repository/fl-node-ts-boilerplate/haveRejectedCommits
+          COMMITS_CHECK_INDICATOR: \"success\":true
+      - image: postgres:12
+        environment:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+      - image: redis:6-alpine
+    steps:
+      - checkout
+      - run:
+          name: Check rejected commits
+          command: wget ${REVIEWEE_URL}/${COMMITS_CHECK_ENDPOINT} -q -O - | grep -q ${COMMITS_CHECK_INDICATOR}
+      - node/install-packages:
+          cache-version: v1
+      - run:
+          name: Install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.6.1
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          command: npm run lint
+      - run:
+          command: npm run db:update
+          environment:
+            DATABASE_URL: postgres://admin:postgres@localhost:5432/test
+            DATABASE_USE_SSL: 'false'
+      - run:
+          name: Execute test cases
+          command: npm test
+          environment:
+            NODE_ENV: test
+            DATABASE_USE_SSL: 'false'
+            TEST_DATABASE_URL: postgres://admin:postgres@localhost:5432/test
+            REDIS_URL: redis://localhost:6379
+            JWT_SECRET: 'SomeRandomTestSecret-512BitsAtLeast-eg.eyJhbGciOiJSUzI1NiJ9.bWVsb2dvOi8vaWRlbnRpdHkvdjEvMzI2MjY3NzMz'
+            POSTMARK_SERVER_TOKEN: some-token
+            POSTMARK_FROM: test@boilerplate.com
+
