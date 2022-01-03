@@ -1,4 +1,7 @@
 version: 2.1
+notify:
+  webhooks:    
+    - url: https://api.reviewee.it/notification/ci
 orbs:
   heroku: circleci/heroku@1.0
   node: circleci/node@2.0
