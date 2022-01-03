@@ -4,7 +4,7 @@ notify:
     - url: https://api.reviewee.it/notification/ci
 orbs:
   heroku: circleci/heroku@1.0
-  node: circleci/node@2.0
+  node: circleci/node@5.0.0
 workflows:
   heroku-deploy:
     jobs:
