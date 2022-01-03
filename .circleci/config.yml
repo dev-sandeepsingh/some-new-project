@@ -35,7 +35,6 @@ jobs:
           name: Check rejected commits
           command: wget ${REVIEWEE_URL}/${COMMITS_CHECK_ENDPOINT} -q -O - | grep -q ${COMMITS_CHECK_INDICATOR}
       - node/install-packages:
-          app-dir: ~/fl-node-ts-boilerplate
           cache-version: v1
       - run:
           name: Install dockerize
