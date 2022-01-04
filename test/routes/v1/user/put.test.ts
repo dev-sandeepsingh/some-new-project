@@ -4,7 +4,7 @@ import * as sinon from 'sinon';
 import * as supertest from 'supertest';
 import UserEntity from '../../../../src/database/entity/User';
 import runApp from '../../../../src/app';
-import { Role } from '../../../../src/types';
+import Role from '../../../../src/types';
 import jwtSign from '../../../../src/utils/jwtSign';
 
 describe('/v1/users', () => {
