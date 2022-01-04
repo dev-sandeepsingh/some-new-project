@@ -18,10 +18,7 @@
     "test": "npx cross-env NODE_ENV=test mocha --exit --timeout 15000 -r ts-node/register --file ./test/setup.ts './test/**/*.test.ts'",
     "test:watch": "npx cross-env NODE_ENV=test mocha --timeout 15000 -r ts-node/register -w -R min --file ./test/setup.ts './test/**/*.test.ts'",
     "lint": "eslint . --ext .ts",
-    "lint-fix": "eslint . --ext .ts --fix",
-    "predev": "npm run swagger",
-    "prebuild": "npm run swagger",
-    "swagger": "tsoa spec"
+    "lint-fix": "eslint . --ext .ts --fix"
   },
   "keywords": [],
   "author": "Sandeep Singh",
