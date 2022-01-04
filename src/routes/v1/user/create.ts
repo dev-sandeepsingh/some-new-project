@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Router } from 'express';
+import { body } from 'express-validator';
 import logger from '../../../service/logger';
 import { setCustomTransactionName } from '../../../service/newrelic';
 import catchAsync from '../../../utils/catchAsync';
 import HttpException from '../../../utils/exceptions/HttpException';
 import createUser from '../../../service/user/create';
-import { body } from 'express-validator';
-import { validateInput } from '../../../utils/validateInput';
+import validateInput from '../../../utils/validateInput';
 
 export const testableRefs = {
   createUser,
@@ -14,7 +14,8 @@ export const testableRefs = {
 
 const route: (route: Router) => void = (router) => {
   setCustomTransactionName('/v1/users/create');
-  router.post('/',
+  router.post(
+    '/',
     [
       body('email').isEmail(),
       body('password').notEmpty(),
@@ -28,7 +29,7 @@ const route: (route: Router) => void = (router) => {
           await testableRefs.createUser({
             email,
             password,
-            name
+            name,
           });
 
           res.status(200).type('application/json').send({
@@ -43,7 +44,8 @@ const route: (route: Router) => void = (router) => {
           next(new HttpException(403, error.message));
         },
       )();
-    });
+    },
+  );
 };
 
 export default route;

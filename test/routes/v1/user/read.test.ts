@@ -29,11 +29,7 @@ describe('/v1/users', () => {
   });
 
   afterEach(async () => {
-    await dbConnection
-      .createQueryBuilder()
-      .delete()
-      .from(UserEntity)
-      .execute();
+    await dbConnection.createQueryBuilder().delete().from(UserEntity).execute();
 
     sandbox.restore();
   });
@@ -48,9 +44,9 @@ describe('/v1/users', () => {
       user = await userRepository.save({
         email: 'john@domain.com',
         password: 'Test',
-        name: 'John'
+        name: 'John',
       });
-      token = jwtSign(user)
+      token = jwtSign(user);
     });
 
     describe('client sends valid ID of his data', () => {

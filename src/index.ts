@@ -25,7 +25,7 @@ const setupCluster = async () => {
   });
 };
 
-const concurrentImportSupported = true;
+const concurrentImportSupported = false;
 const dynoLimitDueToConnectionPool = 20;
 
 const getNumberOfClusters = (): number => {
@@ -62,5 +62,5 @@ const runClusters = () => {
     count: clustersCount,
   });
 };
-setupCluster();
-// runClusters();
+
+runClusters();

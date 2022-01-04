@@ -30,11 +30,7 @@ describe('/v1/users', () => {
   });
 
   afterEach(async () => {
-    await dbConnection
-      .createQueryBuilder()
-      .delete()
-      .from(UserEntity)
-      .execute();
+    await dbConnection.createQueryBuilder().delete().from(UserEntity).execute();
     sandbox.restore();
   });
 
@@ -47,7 +43,7 @@ describe('/v1/users', () => {
         email: 'sandeep@domain.com',
         password: 'test',
       });
-      token = jwtSign(user)
+      token = jwtSign(user);
     });
     context('item with given ID exists', () => {
       let itemId: number;
@@ -62,7 +58,11 @@ describe('/v1/users', () => {
       });
 
       it('should respond with status 200', () =>
-        request.put(`/v1/users/${itemId}`).set('Authorization', `Bearer ${token}`).send(dataToUpdate).expect(200));
+        request
+          .put(`/v1/users/${itemId}`)
+          .set('Authorization', `Bearer ${token}`)
+          .send(dataToUpdate)
+          .expect(200));
 
       it("should respond with item's data", () =>
         request
@@ -81,7 +81,7 @@ describe('/v1/users', () => {
               id: user.id,
               name: dataToUpdate.name,
               email: user.email,
-              role: Role.USER
+              role: Role.USER,
             };
 
             assert.notStrictEqual(result.updatedAt, originalUpdatedAt);
@@ -101,9 +101,7 @@ describe('/v1/users', () => {
           .set('Authorization', `Bearer ${token}`)
           .expect(200)
           .then(async () => {
-            const updatedData = await getRepository(UserEntity).findOne(
-              itemId,
-            );
+            const updatedData = await getRepository(UserEntity).findOne(itemId);
 
             assert(updatedData);
             assert.strictEqual(updatedData.name, dataToUpdate.name);

@@ -28,11 +28,7 @@ describe('/v1/userData', () => {
   });
 
   afterEach(async () => {
-    await dbConnection
-      .createQueryBuilder()
-      .delete()
-      .from(UserEntity)
-      .execute();
+    await dbConnection.createQueryBuilder().delete().from(UserEntity).execute();
     sandbox.restore();
   });
 
@@ -51,12 +47,14 @@ describe('/v1/userData', () => {
       });
 
       itemId = user.id;
-      token = jwtSign({ userId: user.id, ...user })
+      token = jwtSign({ userId: user.id, ...user });
     });
 
-
     it('should respond with status 200', () =>
-      request.delete(`/v1/users/${itemId}`).set('Authorization', `Bearer ${token}`).expect(200));
+      request
+        .delete(`/v1/users/${itemId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200));
     it('should delete item with given ID from database', () =>
       request
         .delete(`/v1/users/${itemId}`)
@@ -69,6 +67,9 @@ describe('/v1/userData', () => {
         }));
 
     it('should respond with status 404', () =>
-      request.delete(`/v1/users/${Number(itemId) + 1}`).set('Authorization', `Bearer ${token}`).expect(404));
+      request
+        .delete(`/v1/users/${Number(itemId) + 1}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404));
   });
 });

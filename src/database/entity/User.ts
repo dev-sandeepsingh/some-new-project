@@ -1,7 +1,7 @@
-import { Role } from '../../types';
 import { Entity, Column, BeforeInsert, BeforeUpdate } from 'typeorm';
-import BaseEntity from './BaseEntity';
 import * as bcrypt from 'bcrypt';
+import Role from '../../types';
+import BaseEntity from './BaseEntity';
 
 @Entity({ name: 'users' })
 export default class User extends BaseEntity {
@@ -13,14 +13,13 @@ export default class User extends BaseEntity {
   @Column()
   password: string;
 
-
   @Column({
     default: Role.USER,
   })
   name: string;
 
   @Column({
-    default: Role.USER
+    default: Role.USER,
   })
   role: string;
 

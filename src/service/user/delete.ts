@@ -1,7 +1,7 @@
 import { getRepository } from 'typeorm';
 import UserEntity from '../../database/entity/User';
 
-export class UserNotFound extends Error { }
+export class UserNotFound extends Error {}
 
 const deleteUser: (id: number) => Promise<void> = async (id) => {
   const userRepository = getRepository(UserEntity);
