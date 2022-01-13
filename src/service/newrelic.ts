@@ -1,4 +1,5 @@
-import { startSegment, setTransactionName } from 'newrelic';
+// eslint-disable-next-line global-require
+const newrelic = require('newrelic');
 
 const useNewRelic = !!process.env.NEW_RELIC_LICENSE_KEY;
 const fakeFn = () => {};
@@ -9,7 +10,7 @@ export const beginSegment = (name: string): (() => void) => {
   }
 
   let endSegment: () => void;
-  startSegment(name, true, () => {
+  newrelic.startSegment(name, true, () => {
     const promise = new Promise((res: (value?: any) => void) => {
       endSegment = res;
     });
@@ -24,5 +25,5 @@ export const setCustomTransactionName = (name: string) => {
     return;
   }
 
-  setTransactionName(name);
+  newrelic.setTransactionName(name);
 };

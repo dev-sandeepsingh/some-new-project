@@ -1,4 +1,7 @@
+// eslint-disable-next-line global-require
 import runApp from './app';
+
+require('dotenv').config();
 
 if (process.env.NEW_RELIC_LICENSE_KEY) {
   // eslint-disable-next-line global-require
