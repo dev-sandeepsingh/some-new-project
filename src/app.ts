@@ -42,7 +42,12 @@ const runApp: () => Promise<RunAppResult> = catchAsync(
         algorithms: ['HS512'],
         getToken,
       }).unless({
-        path: ['/v1/auth/login', '/v1/users'],
+        path: [
+          '/v1/auth/login',
+          '/v1/users/request-password-reset',
+          '/v1/users/reset-password',
+          '/v1/users',
+        ],
       }),
     );
     app.use('/v1', v1);
