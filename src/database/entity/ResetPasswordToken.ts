@@ -7,7 +7,7 @@ import User from './User';
 export default class ResetPasswordToken extends BaseEntity {
   @OneToOne(() => User)
   @JoinColumn({ name: 'email', referencedColumnName: 'email' })
-  email: string;
+  user: User;
 
   @Column({ unique: true })
   token: string;
@@ -15,7 +15,7 @@ export default class ResetPasswordToken extends BaseEntity {
   @Column({
     nullable: false,
   })
-  expires: Date;
+  expires: Date = new Date(Date.now() + 1000 * 60 * 60 * 24);
 
   @BeforeInsert()
   async hashPassword() {
