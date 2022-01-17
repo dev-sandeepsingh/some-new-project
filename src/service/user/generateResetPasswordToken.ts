@@ -18,10 +18,10 @@ const generateResetPasswordToken: (email: string) => Promise<any> = async (
   }
 
   const resetPasswordTokenRepository = getRepository(ResetPasswordTokenEntity);
-  await resetPasswordTokenRepository.delete({ email });
+  await resetPasswordTokenRepository.delete({ user });
 
   const resetPasswordToken = await resetPasswordTokenRepository.create({
-    email,
+    user,
   });
   const { token } = await resetPasswordTokenRepository.save(resetPasswordToken);
 
