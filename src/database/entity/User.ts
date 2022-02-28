@@ -3,6 +3,11 @@ import * as bcrypt from 'bcrypt';
 import Role from '../../types';
 import BaseEntity from './BaseEntity';
 
+export enum UserType {
+  admin = 'admin',
+  user = 'user',
+}
+
 @Entity({ name: 'users' })
 export default class User extends BaseEntity {
   @Column({
