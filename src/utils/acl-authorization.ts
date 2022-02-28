@@ -27,22 +27,25 @@ acl.allow(rolesResources);
 
 class ForbiddenError extends Error {}
 
-const checkPermisssion: (role, resource, permission) => Promise<boolean> =
-  async (role, resource, permission) =>
-    new Promise((resolve, reject) => {
-      acl.areAnyRolesAllowed(
-        role,
-        resource,
-        permission,
-        (err, isAllowed: boolean) => {
-          if (err) {
-            const error = new ForbiddenError(err);
-            reject(error);
-            return;
-          }
-          resolve(isAllowed);
-        },
-      );
-    });
+const checkPermisssion: (
+  role,
+  resource,
+  permission,
+) => Promise<boolean> = async (role, resource, permission) =>
+  new Promise((resolve, reject) => {
+    acl.areAnyRolesAllowed(
+      role,
+      resource,
+      permission,
+      (err, isAllowed: boolean) => {
+        if (err) {
+          const error = new ForbiddenError(err);
+          reject(error);
+          return;
+        }
+        resolve(isAllowed);
+      },
+    );
+  });
 
 export default checkPermisssion;
