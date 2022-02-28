@@ -12,7 +12,6 @@ const toApiResponse =
         meta,
       });
     } catch (error) {
-      console.log(error);
       logger('error', `/v1/users/create: Error ${error}`, error?.stack);
       next(error);
     }
