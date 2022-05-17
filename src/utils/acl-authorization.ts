@@ -6,6 +6,8 @@ enum RequestType {
   get = 'get',
   post = 'post',
   patch = 'patch',
+  delete = 'delete',
+  put = 'put',
 }
 
 const acl = new Acl(new AclMemoryRegexpBackend());
