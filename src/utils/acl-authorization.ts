@@ -1,6 +1,12 @@
-const Acl = require('acl');
-const AclMemoryRegexpBackend = require('acl-mem-regexp');
-const { UserType } = require('../database/entity/User');
+import * as Acl from 'acl';
+import * as AclMemoryRegexpBackend from 'acl-mem-regexp';
+import { UserType } from '../database/entity/User';
+
+enum RequestType {
+  get = 'get',
+  post = 'post',
+  patch = 'patch',
+}
 
 const acl = new Acl(new AclMemoryRegexpBackend());
 const rolesResources = [
@@ -28,9 +34,9 @@ acl.allow(rolesResources);
 class ForbiddenError extends Error {}
 
 const checkPermisssion: (
-  role,
-  resource,
-  permission,
+  role: UserType,
+  resource: string,
+  permission: RequestType,
 ) => Promise<boolean> = async (role, resource, permission) =>
   new Promise((resolve, reject) => {
     acl.areAnyRolesAllowed(
