@@ -34,6 +34,7 @@ export default class User extends BaseEntity {
     if (this.password) {
       this.password = await bcrypt.hash(this.password, 10);
     }
+    this.email = this.email.toLowerCase();
   }
 
   checkIfPasswordMatch(unencryptedPassword: string) {
