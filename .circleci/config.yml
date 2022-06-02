@@ -20,7 +20,7 @@ jobs:
     docker:
       - image: buildkite/puppeteer:10.0.0
         environment:
-          REVIEWEE_URL: https://api.reviewee.it
+          REVIEWEE_URL: https://app.reviewee.it/
           COMMITS_CHECK_ENDPOINT: repository/fl-node-ts-boilerplate/haveRejectedCommits
           COMMITS_CHECK_INDICATOR: \"success\":true
       - image: postgres:12
