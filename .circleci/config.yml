@@ -5,16 +5,16 @@ notify:
     - url: https://api.reviewee.it/notification/ci
 jobs:
   build:
-    working_directory: ~/fl-node-ts-boilerplate
+    working_directory: ~/growthval-api
     docker:
       - image: cimg/node:14.18.0
       - image: postgres:latest
         environment:
           POSTGRES_PASSWORD: ucreate
-          POSTGRES_DB: fl-node-ts-boilerplate
+          POSTGRES_DB: growthval-api
     environment:
       - REVIEWEE_URL: https://api.reviewee.it
-      - COMMITS_CHECK_ENDPOINT: repository/fl-node-ts-boilerplate/haveRejectedCommits
+      - COMMITS_CHECK_ENDPOINT: repository/growthval-api/haveRejectedCommits
       - COMMITS_CHECK_INDICATOR: \"success\":true
     steps:
       - run:
@@ -32,9 +32,15 @@ jobs:
           command: npm run lint      
       - run:
           name: Execute test cases
-          command: npm run test
+          command: npm test
           environment:
-            TEST_DATABASE_URL: postgres://postgres:ucreate@localhost:5432/fl-node-ts-boilerplate
+            NODE_ENV: test
+            DATABASE_USE_SSL: 'false'
+            TEST_DATABASE_URL: postgres://admin:postgres@localhost:5432/test
+            REDIS_URL: redis://localhost:6379
+            JWT_SECRET: 'SomeRandomTestSecret-512BitsAtLeast-eg.eyJhbGciOiJSUzI1NiJ9.bWVsb2dvOi8vaWRlbnRpdHkvdjEvMzI2MjY3NzMz'
+            POSTMARK_SERVER_TOKEN: some-token
+            POSTMARK_FROM: test@boilerplate.com
       - run:
          name: Deploy to Heroku
          command: git push --force https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_UAT_APP_NAME.git HEAD:refs/heads/master
