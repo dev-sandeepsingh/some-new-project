@@ -5,16 +5,16 @@ notify:
     - url: https://api.reviewee.it/notification/ci
 jobs:
   build:
-    working_directory: ~/growthval-api
+    working_directory: ~/fl-node-ts-boilerplate
     docker:
       - image: cimg/node:14.18.0
       - image: postgres:latest
         environment:
           POSTGRES_PASSWORD: ucreate
-          POSTGRES_DB: growthval-api
+          POSTGRES_DB: fl-node-ts-boilerplate
     environment:
       - REVIEWEE_URL: https://api.reviewee.it
-      - COMMITS_CHECK_ENDPOINT: repository/growthval-api/haveRejectedCommits
+      - COMMITS_CHECK_ENDPOINT: repository/fl-node-ts-boilerplate/haveRejectedCommits
       - COMMITS_CHECK_INDICATOR: \"success\":true
     steps:
       - run:
@@ -23,13 +23,13 @@ jobs:
       - checkout
       - run:
           name: Install System Dependencies
-          command: sudo apt-get update -qq      
-      - run: 
+          command: sudo apt-get update -qq
+      - run:
           name: Install Node dependencies
           command: npm install
-      - run: 
+      - run:
           name: Check code quality
-          command: npm run lint      
+          command: npm run lint
       - run:
           name: Execute test cases
           command: npm test
