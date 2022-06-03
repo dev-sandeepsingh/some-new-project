@@ -5,7 +5,7 @@ notify:
     - url: https://api.reviewee.it/notification/ci
 jobs:
   build:
-    working_directory: ~/fl-node-ts-boilerplate-api
+    working_directory: ~/fl-node-ts-boilerplate
     docker:
       - image: cimg/node:14.18.0
       - image: postgres:latest
@@ -34,7 +34,7 @@ jobs:
           name: Execute test cases
           command: npm run test
           environment:
-            TEST_DATABASE_URL: postgres://postgres:ucreate@localhost:5432/growthval-api
+            TEST_DATABASE_URL: postgres://postgres:ucreate@localhost:5432/fl-node-ts-boilerplate
       - run:
          name: Deploy to Heroku
          command: git push --force https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_UAT_APP_NAME.git HEAD:refs/heads/master
