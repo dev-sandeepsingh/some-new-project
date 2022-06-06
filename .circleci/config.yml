@@ -30,10 +30,7 @@ jobs:
           POSTGRES_DB: test
       - image: redis:6-alpine
     steps:
-      - checkout
-      - run:
-          name: Check rejected commits
-          command: wget ${REVIEWEE_URL}/${COMMITS_CHECK_ENDPOINT} -q -O - | grep -q ${COMMITS_CHECK_INDICATOR}
+      - checkout      
       - node/install-packages:
           cache-version: v1
       - run:
