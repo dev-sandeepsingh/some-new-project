@@ -39,6 +39,9 @@ jobs:
           environment:
             DOCKERIZE_VERSION: v0.6.1
       - run:
+          name: Install System Dependencies
+          command: sudo apt-get update -qq      
+      - run:
           name: Wait for db
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run:
