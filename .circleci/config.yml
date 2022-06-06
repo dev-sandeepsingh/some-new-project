@@ -17,6 +17,7 @@ workflows:
               only: master     
 jobs:
   build-and-test:
+    working_directory: ~/fl-node-ts-boilerplate
     docker:
       - image: buildkite/puppeteer:10.0.0
         environment:
