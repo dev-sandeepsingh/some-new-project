@@ -7,7 +7,7 @@ jobs:
   build:
     working_directory: ~/some-new-project
     docker:
-      - image: cimg/node:14.18.0
+      - image: cimg/node:16.3.0
       - image: postgres:latest
         environment:
           POSTGRES_USER: admin
