@@ -1,8 +1,8 @@
 import { validationResult, matchedData } from 'express-validator';
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import HttpException from './exceptions/HttpException';
 
-const validateInput = (req: Request, res: Response, next: NextFunction) => {
+const validateInput = (req: any, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
 
   if (errors.isEmpty()) {
