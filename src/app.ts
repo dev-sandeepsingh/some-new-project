@@ -1,4 +1,3 @@
-// import 'reflect-metadata';
 import { createConnection, Connection } from 'typeorm';
 import * as helmet from 'helmet';
 import * as bodyParser from 'body-parser';
