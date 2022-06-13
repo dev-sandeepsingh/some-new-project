@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node --max-old-space-size=8192 --optimize-for-size --max-executable-size=8192  --max_old_space_size=8192 --optimize_for_size --max_executable_size=8192 --max_new_space_size=8192 build/index.js",
+    "start": "npm run build && node --max_old_space_size=8000 build/index.js",
     "start:dev": "npx nodemon ./src/index.ts",
     "build": "rimraf ./build && tsc",
     "typeorm": "node ./node_modules/typeorm/cli.js",
